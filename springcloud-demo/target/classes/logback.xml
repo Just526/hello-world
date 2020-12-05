@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Logback默认配置的采用的步骤 -->
+    <!-- 1. 尝试在 classpath 下查找文件 logback-test.xml； -->
+    <!-- 2. 如果文件不存在，则查找文件 logback.xml； -->
+    <!-- 3. 如果两个文件都不存在，logback 用 BasicConfigurator 自动对自己进行配置，这会导致记录输出到控制台。 -->
+
+    <!-- 本机环境中只会加载该配置文件，部署服务器时请删除本文件 -->
+    <property scope="context" resource="sensitive.properties"/>
+    <conversionRule conversionWord="msg" converterClass="com.dhcc.demo.logging.SensitiveMessageConverter"> </conversionRule>
+    <!-- 输出控制台 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern><![CDATA[ [%-5level] [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%t] [%logger.%method:%line] -- %msg%n ]]></Pattern>
+        </encoder>
+    </appender>
+
+    <!-- 时间滚动输出日志 -->
+    <appender name="file—info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>D:/logs/aaaa.log</file>
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--            <level>INFO</level>-->
+<!--        </filter>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>D:/logs/aaaa.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern><![CDATA[ [%-5level] [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%t] [%logger.%method:%line] -- %msg%n ]]></pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="console" />
+    </root>
+</configuration>
