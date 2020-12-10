@@ -17,12 +17,12 @@
 
     <!-- 时间滚动输出日志 -->
     <appender name="file—info" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>D:/logs/aaaa.log</file>
+        <file>D:/logs/info.log</file>
 <!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
 <!--            <level>INFO</level>-->
 <!--        </filter>-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>D:/logs/aaaa.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>D:/logs/info.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern><![CDATA[ [%-5level] [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%t] [%logger.%method:%line] -- %msg%n ]]></pattern>

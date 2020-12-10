@@ -2,6 +2,9 @@ package com.dhcc.demo.module.user.controller;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.dhcc.demo.module.user.service.IUserService;
@@ -14,6 +17,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * <p>
@@ -30,19 +36,101 @@ public class UserController {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
+    @Autowired
+    UserController userc;
     @Resource
     private IUserService userService;
-
-
-    @ApiOperation(value = "新增")
+    @ApiOperation(value = "新增user 事务提交测试(选择序号填入testType进行测试)\n " +
+            " 1、propagation = Propagation.REQUIRES_NEW  线程传播行为  与上层事务线程无关，重新创建一个线程\n" +
+            "    isolation = Isolation.READ_UNCOMMITTED   事务读未提交测试\n"+
+            " 2、propagation = Propagation.REQUIRES_NEW  线程传播行为  与上层事务线程无关，重新创建一个线程\n" +
+            "    isolation = Isolation.READ_COMMITTED   事务读已以提交测试\n"+
+            " 3、propagation = Propagation.REQUIRES_NEW  线程传播行为  与上层事务线程无关，重新创建一个线程\n" +
+            "    isolation = Isolation.REPEATABLE_READ   事务可重复读测试\n"+
+            " 4、propagation = Propagation.REQUIRES_NEW  线程传播行为  与上层事务线程无关，重新创建一个线程\n" +
+            "    isolation = Isolation.SERIALIZABLE   事务串行化测试\n"
+    )
     @PostMapping()
-    @Transactional()
-    public int add(@RequestBody User user){
-        int rows=userService.add(user);
-        double a=5/0;
+    @Transactional
+    public int add(@RequestParam String testType,@RequestBody User user){
+        log.info("事务读提交测试");
+        long total = userService.findListByPage(1, 10).getRecords().size();
+        log.info("数据库初始数据条数[{}]",total);
+        //事务1
 
+        int rows=userService.add(user);
+        total = userService.findListByPage(1, 10).getRecords().size();
+        log.info("事务1 数据库添加user 总条数：[{}]",total);
+        //事务2
+        log.info("事务2 执行添加 user");
+        switch (testType){
+            case "1":
+                userc.add2(user);
+                break;
+            case "2":
+                userc.add3(user);
+                break;
+            case "3":
+                userc.add4(user);
+                break;
+            case "4":
+                userc.add5(user);
+                break;
+        }
+        total = userService.findListByPage(1, 10).getRecords().size();
+        log.info("事务1 数据库总条数：[{}]",total);
         return rows;
     }
+
+    /**
+     * propagation = Propagation.REQUIRES_NEW  线程传播行为  与上层事务线程无关，重新创建一个线程
+     *
+     * isolation = Isolation.READ_UNCOMMITTED   事务读未提交测试
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW,isolation = Isolation.READ_UNCOMMITTED)
+    public int add2(User user){
+        int rows=userService.add(user);
+        int total = userService.findListByPage(1, 10).getRecords().size();
+        log.info("事务2 数据库总条数：[{}]",total);
+        return rows;
+    }
+    /**
+     * propagation = Propagation.REQUIRES_NEW  线程传播行为  与上层事务线程无关，重新创建一个线程
+     *
+     * isolation = Isolation.READ_COMMITTED   事务读已以提交测试
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW,isolation = Isolation.READ_COMMITTED)
+    public int add3(User user){
+        int rows=userService.add(user);
+        int total = userService.findListByPage(1, 10).getRecords().size();
+        log.info("事务2 数据库总条数：[{}]",total);
+        return rows;
+    }
+    /**
+     * propagation = Propagation.REQUIRES_NEW  线程传播行为  与上层事务线程无关，重新创建一个线程
+     *
+     * isolation = Isolation.REPEATABLE_READ   事务可重复读测试
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW,isolation = Isolation.REPEATABLE_READ)
+    public int add4(User user){
+        int rows=userService.add(user);
+        int total = userService.findListByPage(1, 10).getRecords().size();
+        log.info("事务2 数据库总条数：[{}]",total);
+        return rows;
+    }
+    /**
+     * propagation = Propagation.REQUIRES_NEW  线程传播行为  与上层事务线程无关，重新创建一个线程
+     *
+     * isolation = Isolation.SERIALIZABLE   事务串行化测试
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW,isolation = Isolation.SERIALIZABLE)
+    public int add5(User user){
+        int rows=userService.add(user);
+        int total = userService.findListByPage(1, 10).getRecords().size();
+        log.info("事务2 数据库总条数：[{}]",total);
+        return rows;
+    }
+
 
     @ApiOperation(value = "删除")
     @DeleteMapping("{id}")
@@ -56,21 +144,5 @@ public class UserController {
         return userService.updateData(user);
     }
 
-    @ApiOperation(value = "查询分页数据")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", value = "页码"),
-        @ApiImplicitParam(name = "pageCount", value = "每页条数")
-    })
-    @GetMapping()
-    public IPage<User> findListByPage(@RequestParam(defaultValue = "0") Integer page,
-                                   @RequestParam(defaultValue = "10") Integer pageCount){
-        return userService.findListByPage(page, pageCount);
-    }
-
-    @ApiOperation(value = "id查询")
-    @GetMapping("{id}")
-    public User findById(@PathVariable Long id){
-        return userService.findById(id);
-    }
 
 }

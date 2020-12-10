@@ -75,6 +75,7 @@
             <artifactId>bcprov-jdk15to18</artifactId>
             <version>1.66</version>
         </dependency>
+
         <!-- redis依賴 -->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->

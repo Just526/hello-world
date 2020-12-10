@@ -1,16 +1,13 @@
 package com.dhcc.demo.aspect;
 
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-import org.springframework.stereotype.Component;
 
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class LogAspect {
 
     private static Logger logger = LoggerFactory.getLogger(LogAspect.class);
@@ -19,11 +16,19 @@ public class LogAspect {
     public void controller() {
     }
 
-    @Before("controller()")
-    public void handle(JoinPoint joinPoint) {
-        MDC.put("traceNo", "1111111111111");
-
-        logger.info("joinPoint[{}],traceNo[{}]", joinPoint, MDC.get("traceNo"));
+    @Around("controller()")
+    public Object handle(ProceedingJoinPoint joinPoint) {
+//      MDC.put("traceNo", "1111111111111");
+//      logger.info("joinPoint[{}],traceNo[{}]", joinPoint, MDC.get("traceNo"));
+         Object response = null;
+        long start=System.currentTimeMillis();
+        try {
+             response = joinPoint.proceed();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        logger.info("请求处理耗时："+(System.currentTimeMillis()-start));
+        return response;
     }
 
 }

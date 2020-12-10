@@ -17,7 +17,7 @@ public class Dom4jElementTest {
         Document document = DocumentHelper.createDocument();
 
         addElement(document,"root/service/sysHead/id").setText("11111");
-        addElement(document,"root/service/sysHead/id1").setText("11111");
+        addElement(document,"root/service/sysHead/id1/aaaa").setText("11111");
         addElement(document,"root/service/sysHead/id2").setText("11111");
         addElement(document,"root/service/sysHead/id3").setText("11111");
         addElement(document,"root/service/sysHead/id4").setText("11111");

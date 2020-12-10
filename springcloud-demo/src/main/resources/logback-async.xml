@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xml>
+<configuration>
+	<springProperty scope="context" name="logging.file.path"
+					source="logging.file.path" />
+	<!-- 控制台设置 -->
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+ 			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<!-- INFO -->
+	<appender name="infoAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 文件路径 -->
+		<file>${logging.file.path}/info.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- 文件名称 -->
+			<fileNamePattern>${logging.file.path}/info/info.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+			<!-- 文件最大保存历史数量 -->
+			<MaxHistory>2</MaxHistory>
+			<maxFileSize>50</maxFileSize>
+		</rollingPolicy>
+	    <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>info</level>
+		</filter>
+	</appender>
+
+	<!-- ERROR -->
+	<appender name="errorAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 文件路径 -->
+		<file>${logging.file.path}/error.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- 文件名称 -->
+			<fileNamePattern>${logging.file.path}/error/error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+			<!-- 文件最大保存历史数量 -->
+			<MaxHistory>30</MaxHistory>
+			<!-- 超过50MB时，触发滚动策略 -->
+			<maxFileSize>50</maxFileSize>
+		</rollingPolicy>
+		<encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+	<!-- 控制台异步输出 -->
+	<appender name="asyncConsole" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold> <!-- default 20, means drop lower event when has 20% capacity remaining -->
+		<appender-ref ref="consoleAppender" />
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>256</queueSize> <!-- default 256 -->
+<!-- 		<includeCallerData>true</includeCallerData>default false -->
+		<neverBlock>true</neverBlock><!-- default false, set to true to cause the-->
+	</appender>
+<!--	 info异步输出到文件 -->
+	<appender name="asyncInfoFile" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>256</queueSize>
+		<appender-ref ref="infoAppender" />
+		<neverBlock>true</neverBlock>
+	</appender>
+	<!--error异步输出到文件 -->
+	<appender name="asyncErrorFile" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>256</queueSize>
+		<appender-ref ref="errorAppender" />
+		<neverBlock>true</neverBlock>
+	</appender>
+	<root level='info' >
+		<appender-ref ref="asyncConsole" />
+		<appender-ref ref="asyncInfoFile" />
+		<appender-ref ref="asyncErrorFile" />
+	</root>
+</configuration>
