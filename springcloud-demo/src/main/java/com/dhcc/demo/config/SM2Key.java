@@ -1,12 +1,16 @@
 package com.dhcc.demo.config;
 
+import cn.hutool.core.util.HexUtil;
+import cn.hutool.crypto.BCUtil;
 import cn.hutool.crypto.ECKeyUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.SM2;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.math.ec.ECPoint;
 
+import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -26,6 +30,15 @@ public class SM2Key {
         publicKey = pair.getPublic();
 //        System.out.println(privateKey);
 //        System.out.println(publicKey);
+        ECPrivateKeyParameters ecPrivateKeyParameters2 = BCUtil.toParams(privateKey);
+        final BigInteger d2 = ecPrivateKeyParameters2.getD();
+        ECPublicKeyParameters ecPublicKeyParameters2 = BCUtil.toParams(publicKey);
+        ECPoint q2 = ecPublicKeyParameters2.getQ();
+        System.out.println(d2+"\nd2:"+ HexUtil.encodeHexStr(d2.toByteArray()));
+        System.out.println(q2+"\nq2:"+HexUtil.encodeHexStr(q2.getEncoded(false)));
+
+
+
 //
 //        privateKeyByte=privateKey.getEncoded();
 //        publicKeyByte=publicKey.getEncoded();
@@ -44,13 +57,13 @@ public class SM2Key {
          ecPublicKeyParameters = ECKeyUtil.toSm2PublicParams(q);
          ecPrivateKeyParameters = ECKeyUtil.toSm2PrivateParams(d);
 
-        final SM2 sm2 = new SM2(ecPrivateKeyParameters, ecPublicKeyParameters);
-        final String encryptHex = sm2.encryptHex(data, KeyType.PublicKey);
-        final String decryptStr = sm2.decryptStr(encryptHex, KeyType.PrivateKey);
-
-        System.out.println(encryptHex);
-
-        System.out.println(decryptStr);
+//        final SM2 sm2 = new SM2(ecPrivateKeyParameters, ecPublicKeyParameters);
+//        final String encryptHex = sm2.encryptHex(data, KeyType.PublicKey);
+//        final String decryptStr = sm2.decryptStr(encryptHex, KeyType.PrivateKey);
+//
+//        System.out.println(encryptHex);
+//
+//        System.out.println(decryptStr);
 
     }
 
