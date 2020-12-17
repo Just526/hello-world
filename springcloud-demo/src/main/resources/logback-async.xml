@@ -80,6 +80,7 @@
 		<appender-ref ref="errorAppender" />
 		<neverBlock>true</neverBlock>
 	</appender>
+	<logger name="com.dhcc.demo" level='debug' />
 	<root level='info' >
 		<appender-ref ref="asyncConsole" />
 		<appender-ref ref="asyncInfoFile" />
