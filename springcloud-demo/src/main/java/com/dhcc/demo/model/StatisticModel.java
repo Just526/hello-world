@@ -1,5 +1,7 @@
 package com.dhcc.demo.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.math.BigDecimal;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -16,25 +18,19 @@ public class StatisticModel {
     private volatile BigDecimal avgTime=new BigDecimal(0);
     private AtomicLong totalTime=new AtomicLong(0);
     private int curConn;
+
     private ConcurrentHashMap tecErr=new ConcurrentHashMap();
     private ConcurrentHashMap busErr=new ConcurrentHashMap();
-
+    @JSONField(serialize=false)
     public boolean isCollect() {
         return this.getResCount().get() > 0;
     }
-
-
-
     /**
      * 统计计数
      */
     public void count(long speedTime) {
-        final long curResCount = resCount.incrementAndGet();
-        final long curTotalTime = totalTime.addAndGet(speedTime);
-        //平均耗时与当前交易耗时一样，不用计算
-        if (avgTime.equals(speedTime)) {
-            return;
-        }
+        resCount.incrementAndGet();
+        totalTime.addAndGet(speedTime);
     }
     /**
      * 失败计数
@@ -106,6 +102,7 @@ public class StatisticModel {
                 "resCount=" + resCount +
                 ", failCount=" + failCount +
                 ", avgTime=" + avgTime +
+                ", totalTime=" + totalTime +
                 ", curConn=" + curConn +
                 ", tecErr=" + tecErr +
                 ", busErr=" + busErr +

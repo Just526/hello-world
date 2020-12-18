@@ -12,7 +12,7 @@ public class LogAspect {
 
     private static Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
-    @Pointcut("execution(* com.dhcc.demo.controller..*(..))")
+    @Pointcut("execution(* com.dhcc..*.controller..*(..))")
     public void controller() {
     }
 

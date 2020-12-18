@@ -1,24 +1,19 @@
 package com.dhcc.demo.module.user.controller;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
+import com.dhcc.demo.module.user.entity.User;
+import com.dhcc.demo.module.user.service.IUserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import com.dhcc.demo.module.user.service.IUserService;
-import com.dhcc.demo.module.user.entity.User;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import javax.annotation.Resource;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -36,6 +31,8 @@ public class UserController {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     @Autowired
     UserController userc;
     @Resource
@@ -51,7 +48,9 @@ public class UserController {
             "    isolation = Isolation.SERIALIZABLE   事务串行化测试\n"
     )
     @PostMapping()
-    @Transactional
+//    @Transactional
+//    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public int add(@RequestParam String testType,@RequestBody User user){
         log.info("事务读提交测试");
         long total = userService.findListByPage(1, 10).getRecords().size();
@@ -76,10 +75,29 @@ public class UserController {
             case "4":
                 userc.add5(user);
                 break;
+            default:
+                User user2 = userService.findById((long) 205);
+                log.info("update 事务1 查询user205",user2);
+                user2.setPhone("123456");
+                int row = userc.update(user2);
+                userc.add6(user2);
+                log.info("update 事务1 更新user205,影响行数[{}]",user2,row);
         }
         total = userService.findListByPage(1, 10).getRecords().size();
         log.info("事务1 数据库总条数：[{}]",total);
         return rows;
+    }
+
+//    @Transactional(propagation = Propagation.REQUIRES_NEW,isolation = Isolation.REPEATABLE_READ)
+//    @Transactional(propagation = Propagation.REQUIRES_NEW,isolation = Isolation.READ_COMMITTED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW,isolation = Isolation.READ_UNCOMMITTED)
+    public User add6(User user){
+        User user2 = userService.findById((long) 205);
+        log.info("update 事务2 查询user205",user2);
+        user2.setPhone("789654");
+        int rows = userc.update(user2);
+        log.info("update 事务2 更新user205,影响行数[{}]",user2,rows);
+        return user2;
     }
 
     /**
