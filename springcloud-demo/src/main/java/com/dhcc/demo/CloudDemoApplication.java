@@ -7,7 +7,6 @@ import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 
 @EnableHystrix
 @MapperScan("com.dhcc.demo.module.*.mapper")
-//@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 @SpringBootApplication
 public class CloudDemoApplication {
     public static void main(String[] args) {

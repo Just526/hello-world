@@ -15,9 +15,15 @@ import java.util.concurrent.atomic.AtomicLong;
 public class StatisticModel {
     private AtomicLong resCount=new AtomicLong(0);
     private AtomicLong failCount=new AtomicLong(0);
-    private volatile BigDecimal avgTime=new BigDecimal(0);
     private AtomicLong totalTime=new AtomicLong(0);
+
+    private BigDecimal avgTime;
+    private BigDecimal successRatio;
+    private long successCount;
+
+
     private int curConn;
+    private String minute;
 
     private ConcurrentHashMap tecErr=new ConcurrentHashMap();
     private ConcurrentHashMap busErr=new ConcurrentHashMap();
@@ -40,8 +46,24 @@ public class StatisticModel {
         failCount.getAndIncrement();
     }
 
+    public String getMinute() {
+        return minute;
+    }
+
+    public void setMinute(String minute) {
+        this.minute = minute;
+    }
+
     public AtomicLong getResCount() {
         return resCount;
+    }
+
+    public long getSuccessCount() {
+        return successCount;
+    }
+
+    public void setSuccessCount(long successCount) {
+        this.successCount = successCount;
     }
 
     public void setResCount(AtomicLong resCount) {
@@ -62,6 +84,14 @@ public class StatisticModel {
 
     public AtomicLong getTotalTime() {
         return totalTime;
+    }
+
+    public BigDecimal getSuccessRatio() {
+        return successRatio;
+    }
+
+    public void setSuccessRatio(BigDecimal successRatio) {
+        this.successRatio = successRatio;
     }
 
     public void setTotalTime(AtomicLong totalTime) {

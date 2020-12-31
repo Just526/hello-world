@@ -81,6 +81,8 @@
 		<neverBlock>true</neverBlock>
 	</appender>
 	<logger name="com.dhcc.demo" level='debug' />
+	<logger name="com.dhcc.openapi" level='debug' />
+	<logger name="org.springframework.data.redis" level='trace' />
 	<root level='info' >
 		<appender-ref ref="asyncConsole" />
 		<appender-ref ref="asyncInfoFile" />

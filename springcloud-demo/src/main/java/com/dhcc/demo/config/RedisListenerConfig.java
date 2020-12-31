@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -20,7 +19,7 @@ import java.util.Map;
  * @date: 2020/12/18 12:23
  * @version: 1.0
  */
-@Configuration
+//@Configuration
 public class RedisListenerConfig {
     @Autowired
     private AutowireCapableBeanFactory beanFactory;

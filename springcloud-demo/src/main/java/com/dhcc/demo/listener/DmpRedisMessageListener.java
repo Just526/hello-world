@@ -1,9 +1,8 @@
 package com.dhcc.demo.listener;
 
 import com.dhcc.demo.config.ErrorDefineCache;
-import org.springframework.stereotype.Component;
 
-@Component("CBUS-DMP")
+//@Component("CBUS-DMP-SERVER")
 public class DmpRedisMessageListener implements RedisMessageListener{
 
     @Override

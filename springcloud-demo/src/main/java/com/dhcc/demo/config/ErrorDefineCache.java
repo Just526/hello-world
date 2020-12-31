@@ -1,8 +1,8 @@
 package com.dhcc.demo.config;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.PostConstruct;
@@ -16,7 +16,8 @@ import java.util.Map;
  * @date: 2020/12/18 15:44
  * @version: 1.0
  */
-@Configuration
+@Slf4j
+//@Configuration
 public class ErrorDefineCache {
     @Resource
     StringRedisTemplate stringredisTemplate;
@@ -45,6 +46,7 @@ public class ErrorDefineCache {
             JSONObject errorCode = JSONObject.parseObject(v);
             config.put(k, errorCode);
         });
+
     }
 
     public void refresh() {

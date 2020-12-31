@@ -1,6 +1,7 @@
+openapi:
+  statistic:
+    enabled: true
 spring:
-  application:
-     name: operate-thirdparty-service
   datasource:
 #    url: jdbc:mysql://114.116.41.228:7878/opcr?characterEncoding=utf-8&verifyServerCertificate=false&useSSL=false&serverTimezone=UTC
 #    username: root
@@ -15,10 +16,12 @@ spring:
 #    host: 127.0.0.1
 #    port: 6379
 #    password: 123456
-    host: 10.2.34.31
-    port: 6379
-    password: '123456'
-
+#    host: 10.2.34.31
+#    port: 6379
+#    password: '123456'
+     host: 114.116.47.6
+     port: 9001
+     password: '123qwe!@#QWE'
 logging:
   config: classpath:logback-async.xml
   file:

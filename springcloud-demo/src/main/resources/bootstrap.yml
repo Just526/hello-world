@@ -1,0 +1,24 @@
+server:
+  port: 8081 #服务端口
+spring: 
+  application:
+    name: operate-thirdparty-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: cbus-config-center
+      profile: dev,1.0.0-dev
+      enabled: false
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}  
+    metadata-map:
+      druid: true
+      druid-context-path: ${server.context-path}  
+  client:
+    serviceUrl:
+#      defaultZone: http://114.116.27.20:8761/eureka/,http://114.116.27.20:8762/eureka/
+      defaultZone: http://10.2.34.22:8761/eureka/,http://10.2.34.22:8762/eureka/
+    enabled: false  #开启注册中心注册
